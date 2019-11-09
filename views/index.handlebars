@@ -1,0 +1,91 @@
+<section class="hero is medium">
+    <nav class="navbar is-transparent" role="navigation" aria-label="main navigation">
+        <div class="navbar-brand">
+            <a class="navbar-item" href="#">
+            <!-- <img src="https://bulma.io/images/bulma-logo.png" width="112" height="28"> -->
+            <h1 class="has-text-weight-bold is-size-4 has-text-white">Binge</h1>
+            </a>
+            <a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            </a>
+        </div>
+        <div id="navbarBasicExample" class="navbar-menu">
+            <div class="navbar-end">
+            <a href="contact.html" class="navbar-item has-text-white has-text-weight-bold">
+                my list
+            </a>
+            </div>
+        </div>
+    </nav>
+    <div class="hero-body">
+        <div class="hero-container container has-text-centered">
+            <h1 class="title has-text-white has-text-weight-bold is-size-2">
+                <!-- A source of movie and actor info -->
+            </h1>
+            <div class="control has-icons-left is-black">
+                <input class="input is-medium is-rounded" type="text" placeholder="Search for movies or actors to binge" id="user-input">
+                <span class="icon is-left">
+                    <i class="fas fa-search"></i>
+                </span>
+            </div>
+            <p class="hero-p has-text-light">
+                <strong class="has-text-light">Suggestions: </strong>Terminator, Tom Hanks, La La Land
+            </p>
+            <a class="hero-button button is-info is-rounded" id="movie-submit">
+                Find Movie
+            </a>
+            <a class="hero-button button is-info is-rounded" id="actor-submit">
+                Find Actor
+            </a>
+        </div>
+    </div>
+</section>
+<section>
+    <div class="modal" id="test-modal">
+        <div class="modal-background stat-modal-background"></div>
+        <div class="modal-card">
+            <header class="modal-card-head stat-head">
+                <p class="modal-card-title">2019 Stats</p>
+                <button class="delete stats-delete" aria-label="close"></button>
+            </header>
+            <section class="modal-card-body stat-text">
+                    <div class="stats-container container"></div>
+            </section>
+            <footer class="modal-card-foot stat-footer"></footer>
+        </div>
+    </div>
+    <div class="modal" id="warning-modal">
+        <div class="modal-background warning-modal-background"></div>
+        <div class="modal-card">
+            <header class="modal-card-head has-background-warning">
+                <p class="modal-card-title">Error</p>
+                <button class="delete warning-delete" aria-label="close"></button>
+            </header>
+            <section class="modal-card-body warning-text">
+                    <p>
+                        Oops! We didn't find who you were looking for. Please check your spelling and try again.
+                    </p>
+            </section>
+            <footer class="modal-card-foot has-background-warning"></footer>
+        </div>
+    </div>
+    
+    <!-- <div class="stats-container container"></div> -->
+</section>
+<section>
+    <div class="container container">
+        <div class="has-text-left">
+            <h1 class="is-size-3 movies-container-title">
+                Trending:
+            </h1>
+            <div class="movies-container">
+                {{!-- drop searched movie objects here --}}
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<script src="/js/index.js"></script>
