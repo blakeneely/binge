@@ -2,8 +2,42 @@ $(document).ready(function(){
 
     function getMovie(){
         var movieId = $(this).attr("data-movieId");
+        var imdbId = "";
+        var moviePlot = "";
+        var moviePoster = "";
         console.log(movieId);
-        
+        var queryURL = "https://api.themoviedb.org/3/movie/" + movieId + "?api_key=01a2c6e54e1c0c32fa82408ddb39628c&language=en-US";
+        $.ajax({
+            url: queryURL,
+            method: "GET"
+        }).then(function(response){
+            imdbId = response.imdb_id;
+            moviePlot = response.overview;
+            moviePoster = "https://image.tmdb.org/t/p/original/" + response.poster_path;
+            console.log(response.imdb_id);
+        }).then(function(){
+            queryURL = "http://www.omdbapi.com/?apikey=trilogy&i=" + imdbId;
+            $.ajax({
+                url: queryURL,
+                method: "GET"
+            }).then(function(response){
+                var movie = {
+                    title: response.Title,
+                    poster: moviePoster,
+                    plot: moviePlot,
+                    year: response.Year,
+                    cast: response.Actors,
+                    director: response.Director,
+                    genre: response.Genre,
+                    rated: response.Rated,
+                    runtime: response.Runtime,
+                    imdbRating: response.imdbRating,
+                    tmdbId: movieId,
+                    imdbId: imdbId
+                }
+                console.log(movie);
+            })
+        })
     };
 
     function searchMovie(){
