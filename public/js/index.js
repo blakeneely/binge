@@ -1,6 +1,7 @@
 $(document).ready(function(){
 
     function getMovie(){
+        displayModal();
         var movieId = $(this).attr("data-movieId");
         var imdbId = "";
         var moviePlot = "";
@@ -20,24 +21,31 @@ $(document).ready(function(){
             $.ajax({
                 url: queryURL,
                 method: "GET"
-            }).then(function(response){
+            }).then(function(res){
                 var movie = {
-                    title: response.Title,
+                    title: res.Title,
                     poster: moviePoster,
                     plot: moviePlot,
-                    year: response.Year,
-                    cast: response.Actors,
-                    director: response.Director,
-                    genre: response.Genre,
-                    rated: response.Rated,
-                    runtime: response.Runtime,
-                    imdbRating: response.imdbRating,
+                    year: res.Year,
+                    cast: res.Actors,
+                    director: res.Director,
+                    genre: res.Genre,
+                    rated: res.Rated,
+                    runtime: res.Runtime,
+                    imdbRating: res.imdbRating,
                     tmdbId: movieId,
                     imdbId: imdbId
                 }
-                console.log(movie);
-            })
-        })
+                $(".title-h1").text(movie.title);
+                $(".movie-poster").attr("src", moviePoster);
+                $(".director").text("Director: " + movie.director);
+                $(".actors").text("Actors: " + movie.cast);
+                $(".plot").text(movie.plot);
+                $(".rating").text("IMDB Rating: " + movie.imdbRating);
+                $(".trailer").attr("src", movie.trailer);
+            });
+            return movie;
+        });
     };
 
     function searchMovie(){
@@ -231,7 +239,8 @@ $(document).ready(function(){
     };
   
     function displayModal(){
-      $('#test-modal').toggle('is-active');
+      $("#movie-modal").toggleClass("is-active");
+      $("html").toggleClass("is-clipped");
     };
     
     function displayWarning(){
@@ -447,6 +456,7 @@ $(document).ready(function(){
     getTrending();
     //   getNews();
     $(document).on('click', '.movie-image', getMovie);
+    $(document).on('click', '.modal-close', displayModal);   
     $(document).on('click', '#actor-submit', searchActor);
     $(document).on('click', '#movie-submit', searchMovie);
     $(document).on("click", ".warning-delete", displayWarning);

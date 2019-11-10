@@ -46,6 +46,10 @@ a,
 .movie-image {
     cursor: pointer;
 }
+.movie-poster {
+    max-width: 500px;
+    height: auto;
+}
 .hero-button {
     margin: 15px;
 }
