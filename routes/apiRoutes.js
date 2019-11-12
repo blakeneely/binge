@@ -2,23 +2,27 @@ var db = require("../models");
 
 module.exports = function(app) {
   // Get all examples
-  app.get("/api/examples", function(req, res) {
-    db.Example.findAll({}).then(function(dbExamples) {
-      res.json(dbExamples);
+  app.get("/api/movies", function(req, res) {
+    db.Movie.findAll({}).then(function(dbMovie) {
+      res.json(dbMovie);
     });
   });
 
   // Create a new example
-  app.post("/api/examples", function(req, res) {
-    db.Example.create(req.body).then(function(dbExample) {
-      res.json(dbExample);
-    });
+  app.post("/api/movies", function(req, res) {
+    db.Movie.create({
+      movie_name: req.body.movie_name,
+      movie_poster: req.body.movie_poster,
+      api_id: req.body.api_id
+    }).then(function(dbMovie) {
+      res.json(dbMovie);
   });
 
   // Delete an example by id
-  app.delete("/api/examples/:id", function(req, res) {
-    db.Example.destroy({ where: { id: req.params.id } }).then(function(dbExample) {
-      res.json(dbExample);
+  app.delete("/api/movies/:id", function(req, res) {
+    db.Movie.destroy({ where: { id: req.params.id } }).then(function(dbMovie) {
+      res.json(dbMovie);
     });
   });
-};
+});
+}

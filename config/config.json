@@ -2,7 +2,7 @@
   "development": {
     "username": "teamuser",
     "password": "password1",
-    "database": "exampledb",
+    "database": "bingedb",
     "host": "localhost",
     "dialect": "mysql"
   },
