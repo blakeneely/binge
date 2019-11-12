@@ -1,5 +1,35 @@
 $(document).ready(function(){
 
+    function postMovie(){
+        var movie = {
+            movie_name: $(".title-h1").text(),
+            movie_poster: $(".movie-poster").attr("src"),
+            api_id: $(".title-h1").attr("data-movieId")
+          };
+        $.ajax({
+            type:"POST",
+            url: "/api/movies",
+            data: movie,
+            dataType: "json",
+        });
+        // Display successfully added something to let users know it was added to their watch list
+        
+        // also outside of this function we need to build a watch list page: probably make a function call it 
+        // "displayWatchList" and have an event listener for when someone clicks the My List link in on the page for 
+        // it to launch
+
+        // that displayWatchList function will basically make a get request you've already written to get all
+        // objects from the api/movies, you just need to display them
+
+        // {{for each}}
+        //      <img src = {{this.movie_poster}}>
+        // {{/each}}
+
+        // loop in movie posters and delete buttons for each poster.
+        // Make another function call it "deleteMovie"
+        // On click this.id destroy
+    };
+
     function getMovie(){
         displayModal();
         var movieId = $(this).attr("data-movieId");
@@ -37,14 +67,15 @@ $(document).ready(function(){
                     imdbId: imdbId
                 }
                 $(".title-h1").text(movie.title);
+                $(".title-h1").attr("data-movieId", movieId);
                 $(".movie-poster").attr("src", moviePoster);
                 $(".director").text("Director: " + movie.director);
                 $(".actors").text("Actors: " + movie.cast);
                 $(".plot").text(movie.plot);
                 $(".rating").text("IMDB Rating: " + movie.imdbRating);
                 $(".trailer").attr("src", movie.trailer);
+
             });
-            return movie;
         });
     };
 
@@ -188,28 +219,7 @@ $(document).ready(function(){
             };
         });
     };
-  
-    function saveContact(){
-      event.preventDefault();
-      var name = $('#name-input').val().trim();
-      var email = $('#email-input').val().trim();
-      var message = $('#message-input').val().trim();
-      if ($('#name-input').val() === "" || $('#email-input').val() === "" || $('#message-input').val() === "") {
-        return false;
-      }
-      else {
-        var newContact = {
-          name: name,
-          email: email,
-          message: message,
-        };
-        database.ref().push(newContact);
-      };
-      $('#name-input').val("");
-      $('#email-input').val("");
-      $('#message-input').val("");
-    };
-  
+ 
     // Get all "navbar-burger" elements
     const $navbarBurgers = Array.prototype.slice.call(document.querySelectorAll('.navbar-burger'), 0);
   
@@ -242,224 +252,13 @@ $(document).ready(function(){
       $("#movie-modal").toggleClass("is-active");
       $("html").toggleClass("is-clipped");
     };
-    
-    function displayWarning(){
-      $('#warning-modal').toggle('is-active')
-    };
-  
-    function getStats(){
-        $('.stats-container').empty();
-        var userInput = $('#user-input').val().trim();
-        if (userInput === "") {
-        displayWarning();
-        }
-        else {
-        userInput = userInput.split(" ").join("-").toLowerCase();
-        $('#user-input').val("");
-        var queryURL = "https://api.mysportsfeeds.com/v1.1/pull/nfl/2019-regular/cumulative_player_stats.json?&player=" + userInput;
-        $.ajax({
-            url: queryURL,
-            type: "GET",
-            dataType: "json",
-            headers: { 
-            "Authorization": "Basic " + btoa("a437f7dc-b82f-4f70-8989-798c15" + ":" + "Classwork12")
-        }
-        }).then(function(response){
-            var position = response.cumulativeplayerstats.playerstatsentry[0].player.Position;
-            var table = $('<table>');
-            var thead = $('<thead>');
-            var tbody = $('<tbody>');
-            var tableDiv = $('<div>');
-            tableDiv.addClass('table-container');
-            table.addClass('table');
-            thead.addClass('thead');
-            tbody.addClass('tbody');
-            var name = response.cumulativeplayerstats.playerstatsentry[0].player.FirstName + " " + response.cumulativeplayerstats.playerstatsentry[0].player.LastName;
-            var team = response.cumulativeplayerstats.playerstatsentry[0].team.City + " " + response.cumulativeplayerstats.playerstatsentry[0].team.Name;
-            var h1Name = $('<h1>');
-            h1Name.addClass('is-size-3');
-            h1Name.text(name);
-            var pPosition = $('<p>');
-            pPosition.text(position);
-            var pTeam = $('<p>');
-            pTeam.addClass('is-italic');
-            pTeam.text(team);
-            $('.stats-container').append(h1Name, pTeam, pPosition);
-            if (position === 'QB'){
-            displayModal();
-            var h2Passing = $('<h2>');
-            h2Passing.addClass('is-size-4');
-            h2Passing.text('Passing');
-            $('.stats-container').append(h2Passing);
-            $('.stats-container').append(tableDiv);
-            $('.table-container').append(table);
-            $('.table').append(thead);
-            $('.table').append(tbody);
-            var header = $('<tr>').append(
-                $('<th>').text('ATT'),
-                $('<th>').text('CMP'),
-                $('<th>').text('CMP%'),
-                $('<th>').text('YARDS'),
-                $('<th>').text('AVG'),
-                $('<th>').text('INT'),
-                $('<th>').text('TD'),
-                $('<th>').text('FUM'),
-                $('<th>').text('SACK'),
-                );
-            $('.thead').append(header);
-            var newRow = $('<tr>').append(
-                $('<td>').text(response.cumulativeplayerstats.playerstatsentry[0].stats.PassAttempts['#text']),
-                $('<td>').text(response.cumulativeplayerstats.playerstatsentry[0].stats.PassCompletions['#text']),
-                $('<td>').text(response.cumulativeplayerstats.playerstatsentry[0].stats.PassPct['#text']),
-                $('<td>').text(response.cumulativeplayerstats.playerstatsentry[0].stats.PassYards['#text']),
-                $('<td>').text(response.cumulativeplayerstats.playerstatsentry[0].stats.PassAvg['#text']),
-                $('<td>').text(response.cumulativeplayerstats.playerstatsentry[0].stats.PassInt['#text']),
-                $('<td>').text(response.cumulativeplayerstats.playerstatsentry[0].stats.PassTD['#text']),
-                $('<td>').text(response.cumulativeplayerstats.playerstatsentry[0].stats.Fumbles['#text']),
-                $('<td>').text(response.cumulativeplayerstats.playerstatsentry[0].stats.PassSacks['#text']),
-                );
-                $('.tbody').append(newRow);
-            }
-            else if (position === 'WR' || position === 'RB' || position === 'TE') {
-                displayModal();
-                var table = $('<table>');
-                var thead = $('<thead>');
-                var tbody  = $('<tbody>');
-                var tableDiv = $('<div>');
-                tableDiv.addClass('table-container');    
-                table.addClass('table');
-                thead.addClass('thead');
-                tbody.addClass('tbody');
-                var h2Receiving = $('<h2>');
-                h2Receiving.addClass('is-size-4');
-                h2Receiving.text('Receiving and Rushing');
-                $('.stats-container').append(h2Receiving);
-                $('.stats-container').append(tableDiv);
-                $('.table-container').append(table);
-                $('.table').append(thead);
-                $('.table').append(tbody);
-                var header = $('<tr>').append(
-                $('<th>').text('REC'),
-                $('<th>').text('REC YRDS'),
-                $('<th>').text('REC AVG'),
-                $('<th>').text('REC TD'),
-                $('<th>').text('RSH'),
-                $('<th>').text('RSH YRDS'),
-                $('<th>').text('RSH AVG'),
-                $('<th>').text('RSH TD'),
-                $('<th>').text('FUM'),
-                );
-                $('.thead').append(header);
-                var newRow = $('<tr>').append(
-                $('<td>').text(response.cumulativeplayerstats.playerstatsentry[0].stats.Receptions['#text']),
-                $('<td>').text(response.cumulativeplayerstats.playerstatsentry[0].stats.RecYards['#text']),
-                $('<td>').text(response.cumulativeplayerstats.playerstatsentry[0].stats.RecAverage['#text']),
-                $('<td>').text(response.cumulativeplayerstats.playerstatsentry[0].stats.RecTD['#text']),
-                $('<td>').text(response.cumulativeplayerstats.playerstatsentry[0].stats.RushAttempts['#text']),
-                $('<td>').text(response.cumulativeplayerstats.playerstatsentry[0].stats.RushYards['#text']),
-                $('<td>').text(response.cumulativeplayerstats.playerstatsentry[0].stats.RushAverage['#text']),
-                $('<td>').text(response.cumulativeplayerstats.playerstatsentry[0].stats.RushTD['#text']),
-                $('<td>').text(response.cumulativeplayerstats.playerstatsentry[0].stats.Fumbles['#text']),
-                );
-                $('.tbody').append(newRow);
-            }
-            else if (position === 'LB' || position === 'DT' || position === 'DE' || position === 'CB' || position === 'FS' || position === 'SS') {
-                displayModal();
-                var table = $('<table>');
-                var thead = $('<thead>');
-                var tbody  = $('<tbody>');
-                var tableDiv = $('<div>');
-                tableDiv.addClass('table-container');    
-                table.addClass('table');
-                thead.addClass('thead');
-                tbody.addClass('tbody');
-                var h2Defense = $('<h2>');
-                h2Defense.addClass('is-size-4');
-                h2Defense.text('Defense');
-                $('.stats-container').append(h2Defense);
-                $('.stats-container').append(tableDiv);
-                $('.table-container').append(table);
-                $('.table').append(thead);
-                $('.table').append(tbody);
-                var header = $('<tr>').append(
-                $('<th>').text('TKL'),
-                $('<th>').text('TKL 4 LS'),
-                $('<th>').text('SAFE'),
-                $('<th>').text('FUM'),
-                $('<th>').text('FUM REC'),
-                $('<th>').text('FUM TD'),
-                $('<th>').text('PS DEF'),
-                $('<th>').text('INT'),
-                $('<th>').text('INT TD'),
-                );
-                $('.thead').append(header);
-                var newRow = $('<tr>').append(
-                $('<td>').text(response.cumulativeplayerstats.playerstatsentry[0].stats.TackleTotal['#text']),
-                $('<td>').text(response.cumulativeplayerstats.playerstatsentry[0].stats.TacklesForLoss['#text']),
-                $('<td>').text(response.cumulativeplayerstats.playerstatsentry[0].stats.Safeties['#text']),
-                $('<td>').text(response.cumulativeplayerstats.playerstatsentry[0].stats.FumForced['#text']),
-                $('<td>').text(response.cumulativeplayerstats.playerstatsentry[0].stats.FumTotalRec['#text']),
-                $('<td>').text(response.cumulativeplayerstats.playerstatsentry[0].stats.FumTD['#text']),
-                $('<td>').text(response.cumulativeplayerstats.playerstatsentry[0].stats.PassesDefended['#text']),
-                $('<td>').text(response.cumulativeplayerstats.playerstatsentry[0].stats.Interceptions['#text']),
-                $('<td>').text(response.cumulativeplayerstats.playerstatsentry[0].stats.IntTD['#text']),
-                );
-                $('.tbody').append(newRow);
-            }
-        })
-        .catch(function(){
-            displayWarning();
-        });
-        };
-    };
-
-    function getNews(){
-        var queryURL = "https://site.api.espn.com/apis/site/v2/sports/football/nfl/news"
-        $.ajax({
-            url: queryURL,
-            method:"GET"
-        }).then(function(response){
-            for(var i = 0; i < response.articles.length; i++){
-                var cardDiv = $('<div>');
-                cardDiv.addClass('card');
-                var cardImage = $('<div>');
-                cardImage.addClass('card-image');
-                var imgFigure = $('<figure>');
-                imgFigure.addClass('image is-3by2');
-                var image = $('<img>');
-                var imgURL = response.articles[i].images[0].url;
-                image.attr('src', imgURL);
-                imgFigure.append(image);
-                cardImage.append(imgFigure);
-                cardDiv.append(cardImage);
-                var cardContent = $('<div>');
-                cardContent.addClass('card-content');
-                var content = $('<div>');
-                content.addClass('content');
-                var headline = response.articles[i].headline;
-                content.text(headline);
-                var br = $('<br>');
-                content.append(br);
-                var aElement = $('<a>');
-                var link = response.articles[i].links.web.href;
-                aElement.attr('href', link);
-                aElement.attr('target', '_blank');
-                aElement.text(' read more');
-                content.append(aElement);
-                cardContent.append(content);
-                cardDiv.append(cardContent);
-                $('.news-container').append(cardDiv);
-            }
-        });
-    };
   
     getTrending();
-    //   getNews();
+    $(document).on('click', '#watch-submit', postMovie);
     $(document).on('click', '.movie-image', getMovie);
     $(document).on('click', '.modal-close', displayModal);   
     $(document).on('click', '#actor-submit', searchActor);
     $(document).on('click', '#movie-submit', searchMovie);
-    $(document).on("click", ".warning-delete", displayWarning);
     $(document).keyup(function(event) {
         if (event.keyCode === 13) {
             event.preventDefault();
