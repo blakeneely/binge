@@ -13,7 +13,7 @@
         </div>
         <div id="navbarBasicExample" class="navbar-menu">
             <div class="navbar-end">
-            <a href="contact.html" class="navbar-item has-text-white has-text-weight-bold">
+            <a href="/api/movies" class="navbar-item has-text-white has-text-weight-bold">
                 my list
             </a>
             </div>
@@ -108,6 +108,27 @@
         </div>
     </div>
 </section>
+{{!-- <section>
+    <div class="container">
+        <div class="has-text-left">
+            <h1 class="is-size-3 binge-container-title">
+                Binge List:
+            </h1>
+            <div class="binge-container column is-centered">
+                {{#each movies}}
+		            {{#if this.watch-submit}}
+                    <div class="card" id="watched-form">
+						<form action="/{{this.id}}?_method=PUT" method="POST" >
+					    	<img class="img" id="binge-list" src={{this.movie_poster}}>
+                        	<button type="submit" class="btn" id="delete-btn">Delete</button></a>
+
+                    	</form>
+					</div>
+                {{!-- drop searched movie objects here --}}
+            </div>
+        </div>
+    </div>
+</section> --}}
 
 
 <script src="/js/index.js"></script>
