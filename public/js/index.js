@@ -6,6 +6,7 @@ $(document).ready(function(){
             movie_poster: $(".movie-poster").attr("src"),
             api_id: $(".title-h1").attr("data-movieId")
           };
+          alert("What up");
         $.ajax({
             type:"POST",
             url: "/api/movies",
@@ -219,6 +220,48 @@ $(document).ready(function(){
             };
         });
     };
+
+//     function displayWatchList(){
+//         $.ajax({
+//             method:"GET",
+//             url: "/api/movies/"
+//             }).then(function(response){
+//                 console.log(response);
+//                 var queryURL = "/api/movies";
+//         $.ajax({
+//             url: queryURL,
+//             method: "GET"
+//         }).then(function(response){
+//             console.log(response);
+//             for (var i = 0; i < 20; i++){
+//                 var movieId = response.results[i].id;
+//                 var movieTitle = response.results[i].original_title;
+//                 var moviePoster = "https://image.tmdb.org/t/p/original/" + response.results[i].poster_path;
+//                 var trendingMovie = {
+//                     movieTitle: movieTitle,
+//                     movieId : movieId,
+//                     moviePoster: moviePoster
+//                 };
+//                 var cardDiv = $('<div>');
+//                 cardDiv.addClass('card');
+//                 var cardImage = $('<div>');
+//                 cardImage.addClass('card-image');
+//                 var imgFigure = $('<figure>');
+//                 imgFigure.addClass('image');
+//                 var image = $('<img>');
+//                 image.attr('src', moviePoster);
+//                 image.attr('data-movieId', movieId);
+//                 image.addClass('movie-image');
+//                 imgFigure.append(image);
+//                 cardImage.append(imgFigure);
+//                 cardDiv.append(cardImage);
+//                 $('.binge-container').append(cardDiv);  
+//             };
+//         });
+
+
+//     });
+// };
  
     // Get all "navbar-burger" elements
     const $navbarBurgers = Array.prototype.slice.call(document.querySelectorAll('.navbar-burger'), 0);
@@ -254,6 +297,7 @@ $(document).ready(function(){
     };
   
     getTrending();
+    // displayWatchList();
     $(document).on('click', '#watch-submit', postMovie);
     $(document).on('click', '.movie-image', getMovie);
     $(document).on('click', '.modal-close', displayModal);   
