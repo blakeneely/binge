@@ -1,34 +1,68 @@
 $(document).ready(function(){
 
+    function deleteMovie(){
+        var id = $(this).val();
+        $.ajax({
+          method: "DELETE",
+          url: "api/movies/" + id,
+        })
+          .then(getList);    
+    };
     function postMovie(){
+        displayMovieAdded();
         var movie = {
             movie_name: $(".title-h1").text(),
             movie_poster: $(".movie-poster").attr("src"),
             api_id: $(".title-h1").attr("data-movieId")
           };
-          alert("What up");
         $.ajax({
             type:"POST",
-            url: "/api/movies",
+            url: "/api/movies/",
             data: movie,
             dataType: "json",
         });
-        // Display successfully added something to let users know it was added to their watch list
-        
-        // also outside of this function we need to build a watch list page: probably make a function call it 
-        // "displayWatchList" and have an event listener for when someone clicks the My List link in on the page for 
-        // it to launch
+    };
 
-        // that displayWatchList function will basically make a get request you've already written to get all
-        // objects from the api/movies, you just need to display them
+    function createList(movieData){
+        var databaseId = movieData.id;
+        var movieId = movieData.api_id;
+        var movieTitle = movieData.movie_name;
+        var moviePoster = movieData.movie_poster;
+        var button = $('<a>');
+        var cardDiv = $('<div>');
+        cardDiv.addClass('card');
+        var cardImage = $('<div>');
+        cardImage.addClass('card-image');
+        var imgFigure = $('<figure>');
+        imgFigure.addClass('image');
+        var image = $('<img>');
+        image.attr('src', moviePoster);
+        image.attr('data-movieId', movieId);
+        image.attr('data-databaseId', databaseId);
+        image.addClass('movie-image');
+        imgFigure.append(image);
+        cardImage.append(imgFigure);
+        cardDiv.append(cardImage);
+        var cardContent = $('<div>');
+        cardContent.addClass('card-content has-text-centered');
+        var content = $('<div>');
+        content.addClass('content');
+        var button = $('<a>');
+        button.addClass('delete is-warning is-rounded remove-movie');
+        button.text('X');
+        button.val(databaseId);
+        imgFigure.append(button);
+        $('.movies-container').append(cardDiv); 
+    }
 
-        // {{for each}}
-        //      <img src = {{this.movie_poster}}>
-        // {{/each}}
-
-        // loop in movie posters and delete buttons for each poster.
-        // Make another function call it "deleteMovie"
-        // On click this.id destroy
+    function getList(){
+        $.get("api/movies", function(data){
+            $('.movies-container').empty();
+            $(".movies-container-title").text("My Binge List:");    
+            for(var i = 0; i < data.length; i++){
+                createList(data[i]);
+            }
+        })
     };
 
     function getMovie(){
@@ -37,8 +71,15 @@ $(document).ready(function(){
         var imdbId = "";
         var moviePlot = "";
         var moviePoster = "";
-        console.log(movieId);
-        var queryURL = "https://api.themoviedb.org/3/movie/" + movieId + "?api_key=01a2c6e54e1c0c32fa82408ddb39628c&language=en-US";
+        var youtubeKey = "";
+        var queryURL = "https://api.themoviedb.org/3/movie/" + movieId + "/videos?api_key=01a2c6e54e1c0c32fa82408ddb39628c&language=en-US";
+        $.ajax({
+            url: queryURL,
+            method: "GET"
+        }).then(function(result){
+            youtubeKey = result.results[0].key;
+        }).then(function(){
+        queryURL = "https://api.themoviedb.org/3/movie/" + movieId + "?api_key=01a2c6e54e1c0c32fa82408ddb39628c&language=en-US";
         $.ajax({
             url: queryURL,
             method: "GET"
@@ -46,7 +87,6 @@ $(document).ready(function(){
             imdbId = response.imdb_id;
             moviePlot = response.overview;
             moviePoster = "https://image.tmdb.org/t/p/original/" + response.poster_path;
-            console.log(response.imdb_id);
         }).then(function(){
             queryURL = "http://www.omdbapi.com/?apikey=trilogy&i=" + imdbId;
             $.ajax({
@@ -65,18 +105,19 @@ $(document).ready(function(){
                     runtime: res.Runtime,
                     imdbRating: res.imdbRating,
                     tmdbId: movieId,
-                    imdbId: imdbId
+                    imdbId: imdbId,
+                    trailer: youtubeKey
                 }
-                $(".title-h1").text(movie.title);
+                $(".title-h1").text(movie.title + " (" + movie.year +")");
                 $(".title-h1").attr("data-movieId", movieId);
                 $(".movie-poster").attr("src", moviePoster);
                 $(".director").text("Director: " + movie.director);
                 $(".actors").text("Actors: " + movie.cast);
                 $(".plot").text(movie.plot);
                 $(".rating").text("IMDB Rating: " + movie.imdbRating);
-                $(".trailer").attr("src", movie.trailer);
-
+                $(".trailer").attr("src", "https://www.youtube.com/embed/" + youtubeKey);
             });
+        });
         });
     };
 
@@ -95,7 +136,6 @@ $(document).ready(function(){
                 url: queryURL,
                 method: "GET"
             }).then(function(response){
-                console.log(response);
                 $(".movies-container-title").text(movieName.replace("%20", " ") + ":");
                 for (var i = 0; i < 20; i++){
                     var movieId = response.results[i].id;
@@ -128,7 +168,6 @@ $(document).ready(function(){
     function searchActor(){
         var actorName = $('#user-input').val().trim();
         actorName = actorName.replace(" ", "%20");
-        console.log("Actor name with spaces replaced: " + actorName);
         if (actorName === "") {
             displayWarning();
           }
@@ -141,13 +180,11 @@ $(document).ready(function(){
                 url: queryURL,
                 method: "GET"
             }).then(function(response){
-                console.log(response)
                 actorId = response.results[0].id;
                 var actor = {
                     name: response.results[0].name,
                     actorId: actorId
                 };
-                console.log(actor);
                 $(".movies-container-title").text(actor.name + ":");
             }).then(function(){
                 $(".movies-container").empty();
@@ -156,7 +193,6 @@ $(document).ready(function(){
                     url: queryURL,
                     method: "GET"
                 }).then(function(response){
-                    console.log(response);
                     for(var i = 0; i < 30; i++){
                         var movieTitle = response.cast[i].title;
                         var movieId = response.cast[i].id;
@@ -180,7 +216,6 @@ $(document).ready(function(){
                         cardImage.append(imgFigure);
                         cardDiv.append(cardImage);
                         $('.movies-container').append(cardDiv);      
-                        console.log(movie);
                     };
                 });
             });
@@ -193,7 +228,8 @@ $(document).ready(function(){
             url: queryURL,
             method: "GET"
         }).then(function(response){
-            console.log(response);
+            $(".movies-container").empty();
+            $(".movies-container-title").text("Trending: ");
             for (var i = 0; i < 20; i++){
                 var movieId = response.results[i].id;
                 var movieTitle = response.results[i].original_title;
@@ -220,48 +256,6 @@ $(document).ready(function(){
             };
         });
     };
-
-//     function displayWatchList(){
-//         $.ajax({
-//             method:"GET",
-//             url: "/api/movies/"
-//             }).then(function(response){
-//                 console.log(response);
-//                 var queryURL = "/api/movies";
-//         $.ajax({
-//             url: queryURL,
-//             method: "GET"
-//         }).then(function(response){
-//             console.log(response);
-//             for (var i = 0; i < 20; i++){
-//                 var movieId = response.results[i].id;
-//                 var movieTitle = response.results[i].original_title;
-//                 var moviePoster = "https://image.tmdb.org/t/p/original/" + response.results[i].poster_path;
-//                 var trendingMovie = {
-//                     movieTitle: movieTitle,
-//                     movieId : movieId,
-//                     moviePoster: moviePoster
-//                 };
-//                 var cardDiv = $('<div>');
-//                 cardDiv.addClass('card');
-//                 var cardImage = $('<div>');
-//                 cardImage.addClass('card-image');
-//                 var imgFigure = $('<figure>');
-//                 imgFigure.addClass('image');
-//                 var image = $('<img>');
-//                 image.attr('src', moviePoster);
-//                 image.attr('data-movieId', movieId);
-//                 image.addClass('movie-image');
-//                 imgFigure.append(image);
-//                 cardImage.append(imgFigure);
-//                 cardDiv.append(cardImage);
-//                 $('.binge-container').append(cardDiv);  
-//             };
-//         });
-
-
-//     });
-// };
  
     // Get all "navbar-burger" elements
     const $navbarBurgers = Array.prototype.slice.call(document.querySelectorAll('.navbar-burger'), 0);
@@ -295,9 +289,18 @@ $(document).ready(function(){
       $("#movie-modal").toggleClass("is-active");
       $("html").toggleClass("is-clipped");
     };
+
+    function displayMovieAdded(){
+        $("#added-modal").toggleClass("is-active");
+        $("html").toggleClass("is-clipped");
+    }
   
     getTrending();
     // displayWatchList();
+    $(document).on('click', '#home', getTrending);  
+    $(document).on('click', '.remove-movie', deleteMovie);  
+    $(document).on('click', '.added-close', displayMovieAdded);
+    $(document).on('click', '#my-list', getList);
     $(document).on('click', '#watch-submit', postMovie);
     $(document).on('click', '.movie-image', getMovie);
     $(document).on('click', '.modal-close', displayModal);   

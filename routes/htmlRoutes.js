@@ -12,11 +12,17 @@ module.exports = function(app) {
   });
 
   // Load example page and pass in an example by id
-  app.get("/example/:id", function(req, res) {
-    db.Example.findOne({ where: { id: req.params.id } }).then(function(dbExample) {
-      res.render("example", {
-        example: dbExample
+  app.get("/movies/:id", function(req, res) {
+    db.Movie.findOne({ where: { id: req.params.id } }).then(function(dbMovie) {
+      res.render("index", {
+        movie: dbMovie
       });
+    });
+  });
+
+  app.delete("/api/movies/:id", function(req, res) {
+    db.Movie.destroy({ where: { id: req.params.id } }).then(function(dbMovie) {
+      res.json(dbMovie);
     });
   });
 

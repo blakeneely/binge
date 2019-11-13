@@ -19,28 +19,13 @@
     margin-left: auto;
     margin-right: auto;
 }
-.stat-modal-background,
-.warning-modal-background {
-    background-color: rgb(0, 0, 0, 0.0);   
+.movie-info{
+    margin: 10px;
 }
-.stat-head,
-.stat-footer {
-    background-color: #E1EFFF;
-}
-.warning-text {
-    background: lightyellow;
-}
-.stats-container {
-    max-width: 1280px;
-    height: 100%;
-}
-.news-container {
-    margin-top: 15px;
-    max-width: 1280px;
-    height: 100%;
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
+.movie-div{
+    max-width: 600px;
+    margin-top: 20px;
+
 }
 a,
 .movie-image {
@@ -49,6 +34,12 @@ a,
 .movie-poster {
     max-width: 500px;
     height: auto;
+    position: relative;
+}
+.remove-movie {
+    position: absolute;
+    top: 10px;
+    right: 10px;
 }
 .hero-button {
     margin: 15px;
