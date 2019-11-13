@@ -2,14 +2,14 @@ var db = require("../models");
 
 module.exports = function(app) {
   // Get all examples
-  app.get("/api/movies", function(req, res) {
+  app.get("/api/movies/", function(req, res) {
     db.Movie.findAll({}).then(function(dbMovie) {
       res.json(dbMovie);
     });
   });
 
   // Create a new example
-  app.post("/api/movies", function(req, res) {
+  app.post("/api/movies/", function(req, res) {
     db.Movie.create({
       movie_name: req.body.movie_name,
       movie_poster: req.body.movie_poster,
